@@ -1,6 +1,6 @@
 # SpaceInvaders
 
-An Internet Explorer 6 compatible Space Invaders. Playable (here)[http://henlin.org/SpaceInvaders/SpaceInvaders.htm].
+An Internet Explorer 6 compatible Space Invaders. Playable [here](http://henlin.org/SpaceInvaders/SpaceInvaders.htm).
 
 ### Why?
 
