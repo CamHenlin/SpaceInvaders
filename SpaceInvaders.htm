@@ -153,18 +153,18 @@
 					Aliens[i][x] = new AlienOne(48*i+5,384 - x * 48,true);
 					AliensHTML[i][x] = document.createElement("Aliens" + i + x);
 					if (x == 1 || x == 2) {
-						AliensHTML[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ Aliens[i][x].x +"\; top:"+ Aliens[i][x].y +"\;\" id=\"Aliens" + i + x +"\"><img src=\"AlienOne.gif\"></div>";
+						AliensHTML[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ Aliens[i][x].x +"\; top:"+ Aliens[i][x].y +"\;\" id=\"Aliens" + i + x +"\"><img src=\"AlienOne.GIF\"></div>";
 					} else if (x == 3 || x == 4) {
-						AliensHTML[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ Aliens[i][x].x +"\; top:"+ Aliens[i][x].y +"\;\" id=\"Aliens" + i + x +"\"><img src=\"AlienTwo.gif\"></div>";
+						AliensHTML[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ Aliens[i][x].x +"\; top:"+ Aliens[i][x].y +"\;\" id=\"Aliens" + i + x +"\"><img src=\"AlienTwo.GIF\"></div>";
 					} else if (x == 5) {
-						AliensHTML[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ Aliens[i][x].x +"\; top:"+ Aliens[i][x].y +"\;\" id=\"Aliens" + i + x +"\"><img src=\"AlienThree.gif\"></div>";
+						AliensHTML[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ Aliens[i][x].x +"\; top:"+ Aliens[i][x].y +"\;\" id=\"Aliens" + i + x +"\"><img src=\"AlienThree.GIF\"></div>";
 					}
 
 					document.getElementById('playingArea').appendChild(AliensHTML[i][x]);
 					AliensHTML[i][x] = document.getElementById("Aliens"+i + x);
 
 					AliensShot[i][x] = document.createElement("AliensShot" + i + x);
-					AliensShot[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ -100 +"\; top:"+ -100 +"\;\" id=\"AliensShot" + i + x +"\"><img src=\"AlienShot.gif\"></div>";
+					AliensShot[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ -100 +"\; top:"+ -100 +"\;\" id=\"AliensShot" + i + x +"\"><img src=\"AlienShot.GIF\"></div>";
 					document.getElementById('playingArea').appendChild(AliensShot[i][x]);
 					AliensShot[i][x] = document.getElementById("AliensShot" + i + x);
 				}
@@ -409,10 +409,10 @@
 	<div id="bottomArea">Lives: 2</div>
 	<div id="enemies"></div>
 	<div id="ship">
-		<img src="Ship.gif">
+		<img src="Ship.GIF">
 	</div>
 	<div id="shot">
-		<img src="Shot.gif">
+		<img src="Shot.GIF">
 	</div>
 
 	<div id="score">
