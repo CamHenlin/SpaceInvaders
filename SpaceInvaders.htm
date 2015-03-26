@@ -1,0 +1,425 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+	<title>Space Invaders</title>
+	<style>
+		#playingArea {
+			position: absolute;
+			top: 50;
+			left: 50;
+			width: 651;
+			height: 744;
+			background-color: rgb(0,0,0);
+		}
+		#bottomLine {
+			top: 50;
+			left: 50;
+			width: 651;
+			height: 694;
+			background-color: transparent;
+			border-bottom: 3px solid rgb(0, 255, 0);
+		}
+		#bottomArea {
+			top: 694;
+			left: 50;
+			width: 651;
+			height: 50;
+			background-color: transparent;
+			font-size: 20pt;
+			font-family: Arial Black;
+			color: rgb(255,255,255);
+		}
+		#ship {
+			position: absolute;
+			top: 624;
+			left: 228;
+			width: 39;
+			height: 24;
+		}
+		#score {
+			position: absolute;
+			top: 20;
+			left: 20;
+			width: 631;
+			height: 25;
+			font-size: 20pt;
+			font-family: Arial Black;
+			color: rgb(255,255,255);
+			background-color: rgb(0,0,0);
+		}
+		#firstcolumntt {
+			font-size: 20pt;
+			font-family: Arial Black;
+			color: rgb(255,255,255);
+			background-color: rgb(0,0,0);
+		}
+		#lastcolumntt {
+			font-size: 20pt;
+			font-family: Arial Black;
+			color: rgb(255,255,255);
+			background-color: rgb(0,0,0);
+		}
+		#shot {
+			position: absolute;
+			top: 0;
+			left 0;
+			width: 3;
+			height: 12;
+		}
+	</style>
+	<script language="text/javascript">
+		//var AlienOne;
+		var Ship;
+		var Score;
+		var MoveLeft;
+		var MoveRight;
+		var Lives;
+
+
+		var ShotObj;
+		var Shot;
+
+		var dx = 6;
+		var dy = 6;
+		var currentScore = 0;
+		var timer;
+
+		var shipLeft = 228;
+
+		var Aliens;
+		var AliensHTML;
+		var AliensShot;
+
+		var FirstColumn = 0;
+		var LastColumn = 10;
+
+		function init() {
+			delete Aliens;
+			delete AliensHTML;
+			delete AliensShot;
+			delete shipLeft;
+			delete FirstColumn;
+			delete LastColumn;
+			delete Ship;
+			delete Shot;
+			delete ShotObj;
+			delete timer;
+
+			delete start;
+			delete AlienOne;
+			delete shotObject;
+			delete keyListener;
+			delete keyListenerTwo;
+			delete moveShip;
+			delete moveAliens;
+			delete CheckDirection;
+			delete DropDown;
+			delete CheckLast;
+			delete UpdateScore;
+			delete CheckHit;
+			delete Render;
+
+			var FirstColumn = 0;
+			var LastColumn = 10;
+
+			var dx = 6;
+			var dy = 6;
+
+			Lives = 2;
+			shipleft = 350;
+			FirstColumn = 0;
+			LastColumn = 10;
+			Aliens = new Array(10);
+			AliensHTML = new Array(10);
+			AliensShot = new Array(10);
+
+			for (i=0; i < 11; i=i+1) {
+				Aliens[i] = new Array(6);
+				AliensHTML[i] = new Array(6);
+				AliensShot[i] = new Array(6);
+			}
+			Score = 0;
+
+			Ship = document.getElementById('ship');
+			Shot = document.getElementById('shot');
+			ScoreHolder = document.getElementById('score');
+			LiveHolder = document.getElementById('bottomArea');
+			document.onkeydown = keyListener;
+			document.onkeyup = keyListenerTwo;
+			ShotObj = new shotObject(0,0,false);
+			for (i=0; i < 11; i=i+1) {
+				for (x=1; x < 6; x=x+1) {
+					Aliens[i][x] = new AlienOne(48*i+5,384 - x * 48,true);
+					AliensHTML[i][x] = document.createElement("Aliens" + i + x);
+					if (x == 1 || x == 2) {
+						AliensHTML[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ Aliens[i][x].x +"\; top:"+ Aliens[i][x].y +"\;\" id=\"Aliens" + i + x +"\"><img src=\"AlienOne.gif\"></div>";
+					} else if (x == 3 || x == 4) {
+						AliensHTML[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ Aliens[i][x].x +"\; top:"+ Aliens[i][x].y +"\;\" id=\"Aliens" + i + x +"\"><img src=\"AlienTwo.gif\"></div>";
+					} else if (x == 5) {
+						AliensHTML[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ Aliens[i][x].x +"\; top:"+ Aliens[i][x].y +"\;\" id=\"Aliens" + i + x +"\"><img src=\"AlienThree.gif\"></div>";
+					}
+
+					document.getElementById('playingArea').appendChild(AliensHTML[i][x]);
+					AliensHTML[i][x] = document.getElementById("Aliens"+i + x);
+
+					AliensShot[i][x] = document.createElement("AliensShot" + i + x);
+					AliensShot[i][x].innerHTML = "<div style=\"position: absolute\; left: "+ -100 +"\; top:"+ -100 +"\;\" id=\"AliensShot" + i + x +"\"><img src=\"AlienShot.gif\"></div>";
+					document.getElementById('playingArea').appendChild(AliensShot[i][x]);
+					AliensShot[i][x] = document.getElementById("AliensShot" + i + x);
+				}
+			}
+			start();
+		}
+
+		function restartGame() {
+			history.go(0);
+		}
+
+		function AlienOne(nx,ny,nalive) {
+			this.alive = nalive;
+			this.x = nx;
+			this.y = ny;
+			this.Shooting = false;
+			this.ShotX = 0;
+			this.ShotY = 0;
+		}
+
+		function shotObject(nx,ny,onoff) {
+			this.Shooting = onoff;
+			this.x = nx;
+			this.y = ny;
+		}
+
+		function keyListener(e){
+			if(!e) {
+				e = window.event;
+			}
+			if(e.keyCode==37 && shipLeft > 0){
+				//keyCode 37 is left arrow
+				MoveLeft = true;
+
+			}
+			if(e.keyCode==39 && shipLeft < 612){
+				//keyCode 39 is right arrow
+				MoveRight = true;
+			}
+			if(e.keyCode == 32) {
+				if (ShotObj.Shooting != true) {
+					ShotObj = new shotObject(shipLeft+20, 624, true);
+				}
+			}
+			if (Lives == -1 && e.keyCode == 13) {
+				restartGame();
+			}
+		}
+
+		function keyListenerTwo(e) {
+			if(!e) {
+				e = window.event;
+			}
+			if(e.keyCode==37 && shipLeft > 0){
+				//keyCode 37 is left arrow
+				MoveLeft = false;
+			}
+			if(e.keyCode==39 && shipLeft < 612){
+				//keyCode 39 is right arrow
+				MoveRight = false;
+			}
+		}
+
+		function moveShip() {
+			if (MoveLeft == true && shipLeft > 0) {
+				shipLeft -= 5;
+				ship.style.left = shipLeft;
+			}
+			if (MoveRight == true && shipLeft < 612) {
+				shipLeft += 5;
+				ship.style.left = shipLeft;
+			}
+			if (shipLeft < 0) {
+				MoveLeft = false;
+			}
+			if (shipLeft > 612) {
+				MoveRight = false;
+			}
+		}
+
+		function moveAliens(){
+			for (i=0; i < 11; i=i+1) {
+				for (x=1; x < 6; x=x+1) {
+					if (Aliens[i][x].alive == true) {
+						Aliens[i][x].x += dx;
+						AliensHTML[i][x].style.left = Aliens[i][x].x;
+
+						if (Aliens[i][x].Shooting == true) {
+							Aliens[i][x].ShotY += 10;
+							AliensShot[i][x].style.top = Aliens[i][x].ShotY;
+							if (Aliens[i][x].ShotY > 690) {
+								Aliens[i][x].Shooting = false;
+							}
+							if (Aliens[i][x].ShotY < 648 && Aliens[i][x].ShotY > 624 && Aliens[i][x].ShotX < shipLeft + 39 && Aliens[i][x].ShotX > shipLeft) {
+								Lives--;
+								Aliens[i][x].Shooting = false;
+								Aliens[i][x].ShotX = -100;
+								AliensShot[i][x].style.left = Aliens[i][x].ShotX;
+								if (Lives == -1) {
+									LiveHolder.innerHTML = "Press Enter to Restart...";
+								}
+								else {
+									LiveHolder.innerHTML = "Lives: " + Lives;
+								}
+							}
+						}
+						rand = Math.random() * 10;
+						if (rand < 1 && rand > 0.995 && Aliens[i][x].Shooting != true) {
+							Aliens[i][x].Shooting = true;
+							Aliens[i][x].ShotX = Aliens[i][x].x + 18;
+							Aliens[i][x].ShotY = Aliens[i][x].y + 24;
+							AliensShot[i][x].style.left = Aliens[i][x].ShotX;
+						}
+					}
+				}
+			}
+		}
+
+		function start(){
+			render();
+			timer = setTimeout('start()',50);
+			timerdiv = document.getElementById('timer');
+		}
+
+		function CheckDirection() {
+			for (i=0; i < 11; i=i+1) {
+				for (x=1; x < 6; x=x+1) {
+					if (Aliens[i][x].alive == true) {
+						if (i == FirstColumn && Aliens[i][x].x < 9) {
+							dx = dx * -1;
+							DropDown();
+						}
+						if (i == LastColumn && Aliens[i][x].x > 605) {
+							dx = dx * -1;
+							DropDown();
+						}
+					}
+				}
+			}
+		}
+
+		function DropDown() {
+			for (i=0; i < 11; i=i+1) {
+				for (x=1; x < 6; x=x+1) {
+					Aliens[i][x].y += dy;
+					AliensHTML[i][x].style.top = Aliens[i][x].y;
+					if (Aliens[i][x].y > 624) {
+						Lives -= 1;
+						init();
+						if (Lives == -1) {
+							LiveHolder.innerHTML = "Press Enter to Restart...";
+						}
+						else {
+							LiveHolder.innerHTML = "Lives: " + Lives;
+						}
+					}
+				}
+			}
+		}
+
+		function CheckLast() {
+			x = 6;
+			do {
+				x--;
+				if (x == 0) {
+					FirstColumn++;
+					if (FirstColumn == 11) {
+						dy = dy + 1;
+						dx = dx + 1;
+						init();
+					}
+					x = 5;
+				}
+			} while (Aliens[FirstColumn][x].alive == false);
+			x = 6;
+			do {
+				x--;
+				if (x == 0) {
+					LastColumn--;
+					if (LastColumn == -1) {
+						dy = dy + 1;
+						dx = dx + 1;
+						AddScore = AddScore + 1;
+						init();
+					}
+					x = 5;
+				}
+			} while (Aliens[LastColumn][x].alive == false);
+		}
+
+		function UpdateScore(AddScore,x) {
+			Score += AddScore * x;
+			ScoreHolder.innerHTML = "Score: " + Score;
+		}
+
+		function CheckHit() {
+			Shot.style.left = ShotObj.x;
+			ShotObj.y = ShotObj.y - 20;
+			Shot.style.top = ShotObj.y;
+
+			for (i=0; i < 11; i=i+1) {
+				for (x=1; x < 6; x=x+1) {
+					if (ShotObj.y > Aliens[i][x].y && ShotObj.y < Aliens[i][x].y +  24 && Aliens[i][x].alive == true) {
+						if (ShotObj.x > Aliens[i][x].x && ShotObj.x < Aliens[i][x].x + 48) {
+							AliensHTML[i][x].style.left = -1000;
+							Aliens[i][x].alive = false;
+							UpdateScore(1,x);
+							ShotObj.Shooting = false;
+							Shot.style.left = -100;
+							CheckLast();
+						}
+					}
+				}
+			}
+			if (ShotObj.y < -20) {
+				ShotObj.Shooting = false;
+				Shot.style.left = -100;
+			}
+		}
+
+		function render() {
+			moveAliens();
+			CheckDirection();
+			moveShip();
+			if (ShotObj.Shooting == true) {
+				CheckHit();
+			}
+
+			lastcolumnt = document.getElementById('lastcolumntt');
+			firstcolumnt = document.getElementById('firstcolumntt');
+
+			firstcolumnt.innerHTML = "firstcolumn: " + FirstColumn;
+			lastcolumnt.innerHTML = "lastcolumn: " + LastColumn;
+		}
+	</script>
+	</head>
+	<body onLoad="init()">
+
+	<div id="playingArea">
+	<div id="bottomLine"><br>
+	</div>
+	<div id="bottomArea">Lives: 2</div>
+	<div id="enemies"></div>
+	<div id="ship">
+		<img src="Ship.gif">
+	</div>
+	<div id="shot">
+		<img src="Shot.gif">
+	</div>
+
+	<div id="score">
+		Score: 0
+	</div>
+	<div id="firstcolumntt">firstcolumn: </div>
+	<div id="lastcolumntt">lastcolumn: </div>
+	</div>
+	</body>
+</html>
